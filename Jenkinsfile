@@ -13,7 +13,12 @@ pipeline {
             }
         }
 
+        // TODO прогнать тесты и линтеры
+
         stage('Build Docker Image') {
+//             when {
+//                 branch 'main'  // Execute this stage only for the main branch
+//             }
 
             steps {
                 script {
@@ -40,6 +45,7 @@ pipeline {
                 sshagent(['dev_ssh']) {
                     sh 'ssh root@176.114.90.241 "echo Successfully connected!"'
                     sh 'ssh root@176.114.90.241 "docker pull def1s/jenkins-test"'
+                    // Удаляет процессы только при их наличии
                     sh 'ssh root@176.114.90.241 "if docker ps -a --format \\"{{.Names}}\\" | grep -q \\"jenkins-test\\"; then docker stop jenkins-test || true; docker rm jenkins-test || true; fi"'
                     sh 'ssh root@176.114.90.241 "docker run -dp 3001:3001 --name jenkins-test def1s/jenkins-test"'
                 }
