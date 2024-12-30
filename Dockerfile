@@ -13,7 +13,7 @@ RUN yarn init -2
 # CHECKOUT
 RUN git clone https://github.com/uniteam31/jenkins-test.git
 WORKDIR /jenkins-test
-RUN git checkout main
+RUN git checkout dev
 RUN git pull
 
 # INSTALL DEPS
