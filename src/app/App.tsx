@@ -4,7 +4,7 @@ const App = () => {
 
 	return (
 		<div>
-			Hello, Jenkins container!
+			hello, again
 		</div>
 	);
 };
