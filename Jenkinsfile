@@ -19,6 +19,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                setBuildStatus("Build succeeded", "PENDING");
                 git branch: 'dev', url: 'https://github.com/uniteam31/jenkins-test.git'
             }
         }
