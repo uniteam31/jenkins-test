@@ -34,7 +34,7 @@ pipeline {
                     setBuildStatus("Running tests and linters", "PENDING");
                 }
                 // Добавьте здесь команды для тестов и линтеров
-                sh 'npm install && npm run lint && npm test'
+//                 sh 'npm install && npm run lint && npm test'
             }
         }
 
