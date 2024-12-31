@@ -11,7 +11,7 @@ RUN corepack enable
 RUN yarn init -2
 
 # CHECKOUT
-RUN git clone https://github.com/uniteam31/jenkins-test.git
+RUN git clone https://github.com/uniteam31/jenkins-test.git # !!! editable
 WORKDIR /jenkins-test
 RUN git pull
 RUN git checkout dev
