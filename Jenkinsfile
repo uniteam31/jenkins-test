@@ -33,6 +33,9 @@ pipeline {
                 script {
                     setBuildStatus("Running tests and linters", "PENDING");
                 }
+
+                echo "Current branch: ${env.BRANCH_NAME}"
+
                 // Добавьте здесь команды для тестов и линтеров
 //                 sh 'npm install && npm run lint && npm test'
             }
