@@ -13,7 +13,6 @@ void setBuildStatus(String message, String state) {
 pipeline {
     agent any
 
-    /* Настройка версии ноды (плагин Jenkins NodeJS) */
     environment {
         NODEJS_HOME = "${tool 'node21'}"
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
@@ -22,28 +21,47 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-//                 setBuildStatus("Build succeeded", "PENDING");
-                git branch: 'dev', url: 'https://github.com/uniteam31/jenkins-test.git' // !!! editable
+                script {
+                    setBuildStatus("Checkout started", "PENDING");
+                }
+                git branch: "${env.CHANGE_BRANCH ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
             }
         }
 
-        // TODO прогнать тесты и линтеры
-
-        stage('Build Docker Image') {
+        stage('Run Tests and Linters') {
             steps {
                 script {
-                    app = docker.build("def1s/jenkins-test") // !!! editable
+                    setBuildStatus("Running tests and linters", "PENDING");
+                }
+                // Добавьте здесь команды для тестов и линтеров
+                sh 'npm install && npm run lint && npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            when {
+                not {
+                    expression { env.CHANGE_ID }
+                }
+            }
+            steps {
+                script {
+                    setBuildStatus("Building Docker image", "PENDING");
+                    app = docker.build("def1s/jenkins-test")
                 }
             }
         }
 
         stage('Push Docker Image') {
             when {
-                branch 'dev'
+                allOf {
+                    branch 'dev'
+                    not { expression { env.CHANGE_ID } }
+                }
             }
-
             steps {
                 script {
+                    setBuildStatus("Pushing Docker image", "PENDING");
                     docker.withRegistry('https://registry.hub.docker.com', 'def1s') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
@@ -52,18 +70,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to dev server from Docker registry') {
+        stage('Deploy to Dev Server') {
             when {
-                branch 'dev'
+                allOf {
+                    branch 'dev'
+                    not { expression { env.CHANGE_ID } }
+                }
             }
-
             steps {
                 sshagent(['dev_ssh']) {
-                    sh 'ssh root@176.114.90.241 "echo Successfully connected!"'
-                    sh 'ssh root@176.114.90.241 "docker pull def1s/jenkins-test"' // !!! editable
-                    /* Удаляет процессы только при их наличии */
+                    sh 'ssh root@176.114.90.241 "docker pull def1s/jenkins-test"'
                     sh 'ssh root@176.114.90.241 "if docker ps -a --format \\"{{.Names}}\\" | grep -q \\"jenkins-test\\"; then docker stop jenkins-test || true; docker rm jenkins-test || true; fi"'
-                    sh 'ssh root@176.114.90.241 "docker run -dp 3001:3001 --name jenkins-test def1s/jenkins-test"' // !!! editable
+                    sh 'ssh root@176.114.90.241 "docker run -dp 3001:3001 --name jenkins-test def1s/jenkins-test"'
                 }
             }
         }
@@ -71,15 +89,16 @@ pipeline {
 
     post {
         success {
-//             setBuildStatus("Build succeeded", "SUCCESS");
+            setBuildStatus("Build succeeded", "SUCCESS");
             echo 'Pipeline выполнен успешно.'
         }
         failure {
-//             setBuildStatus("Build failed", "FAILURE");
+            setBuildStatus("Build failed", "FAILURE");
             echo 'Pipeline завершился с ошибкой.'
         }
         always {
-            cleanWs() // Удаляет временные файлы рабочего пространства
+            cleanWs()
         }
     }
 }
+
