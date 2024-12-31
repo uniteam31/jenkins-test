@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                setBuildStatus("Build succeeded", "PENDING");
+//                 setBuildStatus("Build succeeded", "PENDING");
                 git branch: 'dev', url: 'https://github.com/uniteam31/jenkins-test.git' // !!! editable
             }
         }
@@ -71,11 +71,11 @@ pipeline {
 
     post {
         success {
-            setBuildStatus("Build succeeded", "SUCCESS");
+//             setBuildStatus("Build succeeded", "SUCCESS");
             echo 'Pipeline выполнен успешно.'
         }
         failure {
-            setBuildStatus("Build failed", "FAILURE");
+//             setBuildStatus("Build failed", "FAILURE");
             echo 'Pipeline завершился с ошибкой.'
         }
         always {
