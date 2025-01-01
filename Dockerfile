@@ -16,7 +16,7 @@ RUN git clone https://github.com/uniteam31/jenkins-test.git # !!! editable
 WORKDIR /jenkins-test
 RUN git fetch --all
 RUN git pull
-RUN git checkout dev
+RUN git checkout dev # TODO добавить ENV для собираемой ветки
 
 # INSTALL DEPS
 WORKDIR /jenkins-test
