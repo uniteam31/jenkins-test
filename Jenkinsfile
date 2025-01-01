@@ -22,7 +22,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    setBuildStatus("Checkout started", "PENDING");
+//                     setBuildStatus("Checkout started", "PENDING");
                 }
                 git branch: "${env.BRANCH_NAME ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
             }
@@ -31,7 +31,7 @@ pipeline {
         stage('Run Tests and Linters') {
             steps {
                 script {
-                    setBuildStatus("Running tests and linters", "PENDING");
+//                     setBuildStatus("Running tests and linters", "PENDING");
                 }
 
                 echo "Current branch: ${env.BRANCH_NAME}"
@@ -47,7 +47,7 @@ pipeline {
 //             }
             steps {
                 script {
-                    setBuildStatus("Building Docker image", "PENDING");
+//                     setBuildStatus("Building Docker image", "PENDING");
                     app = docker.build("def1s/jenkins-test")
                 }
             }
@@ -59,7 +59,7 @@ pipeline {
            }
             steps {
                 script {
-                    setBuildStatus("Pushing Docker image", "PENDING");
+//                     setBuildStatus("Pushing Docker image", "PENDING");
                     docker.withRegistry('https://registry.hub.docker.com', 'def1s') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
@@ -84,11 +84,11 @@ pipeline {
 
     post {
         success {
-            setBuildStatus("Build succeeded", "SUCCESS");
+//             setBuildStatus("Build succeeded", "SUCCESS");
             echo 'Pipeline выполнен успешно.'
         }
         failure {
-            setBuildStatus("Build failed", "FAILURE");
+//             setBuildStatus("Build failed", "FAILURE");
             echo 'Pipeline завершился с ошибкой.'
         }
         always {
