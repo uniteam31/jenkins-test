@@ -26,7 +26,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    app = docker.build("def1s/jenkins-test", "--no-cache .") // TODO можно проюзать только к clone
+                    app = docker.build("def1s/jenkins-test", " --build-arg BRANCH=${env.BRANCH_NAME} .") // TODO можно проюзать только к clone
                 }
             }
         }

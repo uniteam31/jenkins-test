@@ -11,12 +11,13 @@ RUN corepack enable
 RUN yarn init -2
 
 # CHECKOUT
-ARG CACHE_BUST=1
+# Определяем аргумент сборки с дефолтным значением 'dev'
+ARG BRANCH=dev
 RUN git clone https://github.com/uniteam31/jenkins-test.git # !!! editable
 WORKDIR /jenkins-test
 RUN git fetch --all
 RUN git pull
-RUN git checkout dev # TODO добавить ENV для собираемой ветки
+RUN git checkout ${BRANCH}
 
 # INSTALL DEPS
 WORKDIR /jenkins-test
