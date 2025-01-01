@@ -54,11 +54,7 @@ pipeline {
             }
             steps {
                 sshagent(['jenkins-test_ssh']) {
-                    sh 'ssh root@176.114.90.241 "cd ~/jenkins-test-orch"'
-                    sh 'ssh root@176.114.90.241 "git pull"'
-                    sh 'ssh root@176.114.90.241 "docker-compose pull"'
-                    sh 'ssh root@176.114.90.241 "docker-compose down || true"'
-                    sh 'ssh root@176.114.90.241 "docker-compose up -d"'
+                   sh 'ssh root@176.114.90.241 "/root/jenkins-test-orch/deploy.sh"'
                 }
             }
         }
