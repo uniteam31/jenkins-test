@@ -24,7 +24,7 @@ pipeline {
                 script {
                     setBuildStatus("Checkout started", "PENDING");
                 }
-                git branch: "${env.CHANGE_BRANCH ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
+                git branch: "${env.BRANCH_NAME ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
             }
         }
 
@@ -42,11 +42,9 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            when {
-                not {
-                    expression { env.CHANGE_ID }
-                }
-            }
+//             when {
+//                 branch 'dev'
+//             }
             steps {
                 script {
                     setBuildStatus("Building Docker image", "PENDING");
@@ -56,12 +54,9 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-            when {
-                allOf {
-                    branch 'dev'
-                    not { expression { env.CHANGE_ID } }
-                }
-            }
+           when {
+               branch 'dev'
+           }
             steps {
                 script {
                     setBuildStatus("Pushing Docker image", "PENDING");
@@ -75,10 +70,7 @@ pipeline {
 
         stage('Deploy to Dev Server') {
             when {
-                allOf {
-                    branch 'dev'
-                    not { expression { env.CHANGE_ID } }
-                }
+                branch 'dev'
             }
             steps {
                 sshagent(['dev_ssh']) {
