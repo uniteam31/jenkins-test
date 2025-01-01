@@ -1,29 +1,33 @@
-FROM ubuntu
 FROM node
 
 # INSTALL PACKAGES
 RUN apt -yqq update \
-    && apt -yqq install git curl \
-    && apt clean \
+    && apt -yqq install git curl nginx \
+    && apt clean
+
+# NGINX CONFIGURE
+RUN rm /etc/nginx/sites-enabled/default
+COPY nginx/default /etc/nginx/sites-enabled
 
 # INSTALL YARN
 RUN corepack enable
 RUN yarn init -2
 
 # CHECKOUT
-# Определяем аргумент сборки с дефолтным значением 'dev'
 ARG BRANCH=dev
-RUN git clone https://github.com/uniteam31/jenkins-test.git # !!! editable
+RUN git clone https://github.com/uniteam31/jenkins-test.git
 WORKDIR /jenkins-test
 RUN git fetch --all
 RUN git pull
 RUN git checkout ${BRANCH}
 
 # INSTALL DEPS
-WORKDIR /jenkins-test
 RUN yarn install
 RUN yarn build
 
-EXPOSE 3001
+RUN rm -rf /var/www/html
+RUN mv build /var/www/
 
-CMD ["yarn", "start"]
+# EXPOSE PORT AND START NGINX
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
