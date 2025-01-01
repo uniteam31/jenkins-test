@@ -14,6 +14,7 @@ RUN yarn init -2
 ARG CACHE_BUST=1
 RUN git clone https://github.com/uniteam31/jenkins-test.git # !!! editable
 WORKDIR /jenkins-test
+RUN git fetch --all
 RUN git pull
 RUN git checkout dev
 
