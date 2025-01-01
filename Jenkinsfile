@@ -21,18 +21,18 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                script {
+//                 script {
 //                     setBuildStatus("Checkout started", "PENDING");
-                }
+//                 }
                 git branch: "${env.BRANCH_NAME ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
             }
         }
 
         stage('Run Tests and Linters') {
             steps {
-                script {
+//                 script {
 //                     setBuildStatus("Running tests and linters", "PENDING");
-                }
+//                 }
 
                 echo "Current branch: ${env.BRANCH_NAME}"
 
