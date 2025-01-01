@@ -54,9 +54,11 @@ pipeline {
             }
             steps {
                 sshagent(['jenkins-test_ssh']) {
-                    sh 'ssh root@176.114.90.241 "docker pull def1s/jenkins-test"'
-                    sh 'ssh root@176.114.90.241 "if docker ps -a --format \\"{{.Names}}\\" | grep -q \\"jenkins-test\\"; then docker stop jenkins-test || true; docker rm jenkins-test || true; fi"'
-                    sh 'ssh root@176.114.90.241 "docker run -dp 3000:80 --name jenkins-test def1s/jenkins-test"'
+                    sh 'ssh root@176.114.90.241 "cd ~/jenkins-test-orch"'
+                    sh 'ssh root@176.114.90.241 "git pull"'
+                    sh 'ssh root@176.114.90.241 "docker-compose pull"'
+                    sh 'ssh root@176.114.90.241 "docker-compose down || true"'
+                    sh 'ssh root@176.114.90.241 "docker-compose up -d"'
                 }
             }
         }
