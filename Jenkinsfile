@@ -37,7 +37,7 @@ pipeline {
            }
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'def1s') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-def1s') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
@@ -50,7 +50,7 @@ pipeline {
                 branch 'dev'
             }
             steps {
-                sshagent(['dev_ssh']) {
+                sshagent(['jenkins-test_ssh']) {
                     sh 'ssh root@176.114.90.241 "docker pull def1s/jenkins-test"'
                     sh 'ssh root@176.114.90.241 "if docker ps -a --format \\"{{.Names}}\\" | grep -q \\"jenkins-test\\"; then docker stop jenkins-test || true; docker rm jenkins-test || true; fi"'
                     sh 'ssh root@176.114.90.241 "docker run -dp 3001:3001 --name jenkins-test def1s/jenkins-test"'
