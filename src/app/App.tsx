@@ -4,7 +4,7 @@ const App = () => {
 
 	return (
 		<div>
-			sdfdsfsdf againsdfdsfdffddfdfdfdfdfdfdfdfdf
+			sdfdsfsdf againsdfdsfdffddfdfdfdfdfdfdfdfdfsdf
 		</div>
 	);
 };
