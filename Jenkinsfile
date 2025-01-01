@@ -1,15 +1,4 @@
 // TODO повыносить все в env
-
-void setBuildStatus(String message, String state) {
-  step([
-      $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/uniteam31/jenkins-test.git"], // !!! editable
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-  ]);
-}
-
 pipeline {
     agent any
 
@@ -21,33 +10,22 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-//                 script {
-//                     setBuildStatus("Checkout started", "PENDING");
-//                 }
                 git branch: "${env.BRANCH_NAME ?: 'dev'}", url: 'https://github.com/uniteam31/jenkins-test.git'
             }
         }
 
         stage('Run Tests and Linters') {
             steps {
-//                 script {
-//                     setBuildStatus("Running tests and linters", "PENDING");
-//                 }
-
                 echo "Current branch: ${env.BRANCH_NAME}"
 
                 // Добавьте здесь команды для тестов и линтеров
-//                 sh 'npm install && npm run lint && npm test'
+                // sh 'npm install && npm run lint && npm test'
             }
         }
 
         stage('Build Docker Image') {
-//             when {
-//                 branch 'dev'
-//             }
             steps {
                 script {
-//                     setBuildStatus("Building Docker image", "PENDING");
                     app = docker.build("def1s/jenkins-test")
                 }
             }
@@ -59,7 +37,6 @@ pipeline {
            }
             steps {
                 script {
-//                     setBuildStatus("Pushing Docker image", "PENDING");
                     docker.withRegistry('https://registry.hub.docker.com', 'def1s') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
@@ -84,11 +61,9 @@ pipeline {
 
     post {
         success {
-//             setBuildStatus("Build succeeded", "SUCCESS");
             echo 'Pipeline выполнен успешно.'
         }
         failure {
-//             setBuildStatus("Build failed", "FAILURE");
             echo 'Pipeline завершился с ошибкой.'
         }
         always {
