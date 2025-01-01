@@ -26,7 +26,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def branchName = env.GIT_BRANCH.tokenize('/').last() // Получаем текущую ветку
+                    def branchName = env.CHANGE_TARGET ?: env.BRANCH_NAME
+                    echo "Building branch: ${branchName}"
+
                     app = docker.build("def1s/jenkins-test", " --build-arg BRANCH=${branchName} .") // TODO можно проюзать только к clone
                 }
             }
